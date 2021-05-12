@@ -12,7 +12,18 @@ function onMouseClickMesh(e){
     let firstMeshObject = intersects[0];
     if (firstMeshObject.object.type == 'Mesh'){
         if (firstMeshObject.object.name != 'space'){
-            console.log('被点击的事务：'+firstMeshObject);
+            let name = firstMeshObject.object.name;
+            switch(name){
+                case 'box':
+                    testNewScene(); // 跳转测试
+                    break;
+                case 'sphere':
+                    createSphereMesh();
+                    break;  
+                default:
+                    break; 
+            }
+            
         }
         /* else {
             
@@ -23,7 +34,14 @@ function onMouseClickMesh(e){
     }
     
 }
-
+const testNewScene = () => {
+    scene.children = [];
+    const boxGeometry = new THREE.BoxGeometry(10,10,10);
+    const boxMaterial = new THREE.MeshBasicMaterial({color:0x00ff00});
+    const boxMesh = new THREE.Mesh(boxGeometry,boxMaterial);
+    boxMesh.name = 'sphere';
+    scene.add(boxMesh);
+}
 // 鼠标右键
 function cameraAnimate(){
     let xAxis = clickedPosition.x - camera.position.x;

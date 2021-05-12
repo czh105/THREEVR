@@ -1,8 +1,7 @@
 window.onorientationchange = function(){
     let angle = window.orientation;
     switch(angle){
-        case 0:
-            
+        case 0:   
             break;
         case 90:
             windowRationRight();
@@ -14,6 +13,20 @@ window.onorientationchange = function(){
             windowRationDown();
             break;
     }
+}
+window.onresize = function() {
+    width = document.getElementById('mainView').width;
+    height = document.getElementById('mainView').height;
+    _width = document.getElementById('secondView').width;
+    _height = document.getElementById('secondView').height;
+    _camera.aspect = _width / _height;
+    _camera.updateProjectionMatrix();
+    initSecondRenderer();
+    _renderer.setSize(_width, _height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    render();
+    renderer.setSize(width, height);
 }
 //屏幕右旋
 var windowRationRight = function(){
@@ -79,7 +92,11 @@ function initKeyUp(e){
             break;
     }
 }
+
 function listenKeyDown(){
+    if(!isMove){
+        return;
+    }
     // 刷新获取时间
     let delta = clock.getDelta();
     // speed 每次的速度，保证过渡

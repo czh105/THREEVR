@@ -7,9 +7,16 @@ function touchUpdate() {
     target.y = 500 * Math.cos(phi);
     target.z = 500 * Math.sin(phi) * Math.sin(theta);
     camera.lookAt(target);
+    changeSecondSceneCamera(phi, theta);
     render();
 }
-
+const changeSecondSceneCamera = (phi, theta) => {
+    let x = 100 * Math.sin(phi) * Math.cos(theta);
+    let z = 100 * Math.sin(phi) * Math.sin(theta);
+    _mesh.position.x = x;
+    _mesh.position.z = z;
+    _light.position.set(0, 0, 0);
+}
 function touchStart(e) {
     e.preventDefault();
     startX = e.touches[0].pageX;
@@ -28,19 +35,18 @@ function touchMove(e) {
 
 function onMouseDown(e){
     e.preventDefault();
-   /*if(e.button == 2){
-        onMouseRight(e);
+    if(e.button == 2){
+        onMouseClickMesh(e);
     }
-    else { }*/
-    startX = e.pageX;
-    startY = e.pageY;
-    startLon = lon;
-    startLat = lat;
-    document.addEventListener('mousemove',onMouseMove,false);
-    document.addEventListener('mouseup',onMouseUp,false);
-    isClick = true;
-    
-    
+    else { 
+        startX = e.pageX;
+        startY = e.pageY;
+        startLon = lon;
+        startLat = lat;
+        document.addEventListener('mousemove',onMouseMove,false);
+        document.addEventListener('mouseup',onMouseUp,false);
+        isClick = true;
+    }  
 }
 
 function onMouseMove(e){

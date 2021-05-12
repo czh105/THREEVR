@@ -23,7 +23,11 @@ var dirSpeed = new THREE.Vector3();
 var direction = new THREE.Vector3();
 var rotation = new THREE.Vector3();
 
-var speed = 200;
+var speed = 50;
+var width = window.innerWidth;
+var height = window.innerHeight;
+console.log(width);
+// 自动旋转
 function update() {
     lon += 0.1;
     lat = Math.max(-85, Math.min(85, lat));
@@ -35,7 +39,7 @@ function update() {
     camera.lookAt(target);
     render();
 }
-
+// 加载纹理
 function loadTexture(url) {
     let texture = new THREE.TextureLoader().load(url);
     texture.needsUpdate = true;
@@ -57,13 +61,15 @@ function initStats(){
 // 初始化渲染器
 function initRender(){
     renderer = new THREE.WebGLRenderer({
-        antialias: true
+        antialias: true,
+        canvas: document.getElementById('mainView')
     });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio); // 设备旋转
+    // renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     renderer.setClearColor(0xeeeeee);
     renderer.sortObjects = false;
-    document.body.appendChild(renderer.domElement);
+    // document.body.appendChild(renderer.domElement);
 }
 
 // 初始化相机
@@ -78,11 +84,29 @@ function initScene(){
     scene = new THREE.Scene();
 }
 
-// 初始化使用的模型
-function init() {
-    initScene();
-    initCamera();
-    initRender();
+// 初始化事件监听
+function initEventListener(){
+    /* const _el = document.getElementsByTagName('canvas');
+    let el;
+    if (_el.length > 0){
+        el = _el[0]; 
+    } else {
+        el = document;
+    }*/
+    el = document.getElementById('mainView');
+    el.addEventListener('touchstart', touchStart, {
+        passive: false
+    });
+    el.addEventListener('touchmove', touchMove, {
+        passive: false
+    });
+    el.addEventListener('mousedown', onMouseDown, false);
+    document.addEventListener('keydown', initKeyDown, false);
+    document.addEventListener('keyup', initKeyUp, false);
+    el.addEventListener('mousewheel', onMouseScrollChange, false);
+    el.addEventListener('DOMMouseScroll', onMouseScrollChange, false);
+}
+function createBoxMesh(){
     var geometry = new THREE.BoxGeometry(300, 300, 300);
     const boxGeometry = new THREE.BoxGeometry(10,10,10);
     const boxMaterial = new THREE.MeshBasicMaterial({color:0xffff});
@@ -103,43 +127,49 @@ function init() {
     mesh = new THREE.Mesh(geometry, material);
     mesh.scale.x *= -1; //功能：将网格里面的材质图片翻转，成为正面
     mesh.name = 'space';
-    scene.add(mesh);
-   
-    document.addEventListener('touchstart', touchStart, {
-        passive: false
-    });
-    document.addEventListener('touchmove', touchMove, {
-        passive: false
-    });
-    document.addEventListener('mousedown', onMouseDown, false);
-    // document.addEventListener('keydown', onKeyDown, false);
-    // document.addEventListener('keyup', onKeyUp, false);
-    document.addEventListener('keydown', initKeyDown, false);
-    document.addEventListener('keyup', initKeyUp, false);
-    animate();
+    scene.add(mesh);  
+}
+// 初始化使用的模型
+function init() {
     initStats();
+    initScene();
+    initCamera();
+    initRender();
+    initEventListener();
+    createBoxMesh();
+    animate();
 
 }
-
 function render() {
-    //stats.update();
+    stats.update();
+    // console.log(stats);
     renderer.render(scene, camera);
 }
 function animate() {
-    // if(isMove == true){
+    if(isMove == true){
         listenKeyDown();
-    // }
+    }
     requestAnimationFrame(animate);
     /*if(!isClick){
         update();
     }*/
     render();
 }
-window.onresize = function() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+// 相机的缩放倍数
+const onMouseScrollChange = (e) => {
+    // let e = e | window.event;
+    let direct = 0;
+    if (e.wheelDelta){
+        direct = e.wheelDelta;
+    } else if (e.detail) {
+        direct = e.detail;
+    }
+    if (direct > 0 && camera.zoom > 0 && camera.zoom < 1.5){
+        camera.zoom += 0.02;
+    } else if (direct < 0 && camera.zoom > 1){
+        camera.zoom -= 0.02;
+    }
     camera.updateProjectionMatrix();
-    render();
-    renderer.setSize(window.innerWidth, window.innerHeight);
 }
 init();  
 window.onload = function(){

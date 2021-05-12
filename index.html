@@ -20,21 +20,55 @@
     <style>
         body {
             margin: 0;
-            display: flex;
-        }
-        
-        canvas {
-            width: 100%;
-            height: 100%;
         }
     </style>
 </head>
 
-<body>
+  <body>
+    <div style="width:100vw;height:100vh;display:block">
+      <canvas id="mainView" style="width:100vw;height:100vh;display:block"></canvas>
+    </div>
+    <canvas id="secondView" style="position:fixed;top:10px;right:10px;z-index:10;width:20vw;height:10vh"></canvas>
     <script src='./js/control/cameraControl.js'></script>
     <script src='./js/control/raycaster..js'></script>
-    <script src='./js/control/event.js'></script> 
     <script src="./js/control/scene.js"></script>
-</body>
-
+    <script src='./js/control/sphereVR.js'></script>
+    <script src='./js/control/event.js'></script> 
+    
+    <script>
+      // createSphereMesh();
+    </script>
+    <!--
+    <script>
+    var option = {
+        enableHighAccuracy: false,
+        maximumAge: 0,
+        timeout: 30000
+    }
+    var showPosition = function(position){
+      var lat = position.coords.latitude;// 获取经度
+      var lon = position.coords.longitude;// 获取纬度
+      console.log('经度：' + lat + '纬度：' + lon)
+    }
+    var showError = function(error){
+      switch (error.code){
+        case error.PERMISSION_DENIED:
+          alert('你拒绝地理定位服务');
+          break;
+        case error.POSITION_UNAVAILABLE:
+          alert('无法获取位置');
+          break;
+        case error.TIMEOUT:
+          alert('超时');
+          break;
+        default:
+          break;
+      }
+    }
+    window.onload = function(){
+        navigator.geolocation.getCurrentPosition(showPosition, showError, option);
+    }
+    </script>-->
+    
+  </body>
 </html>
